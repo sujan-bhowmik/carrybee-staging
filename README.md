@@ -1,6 +1,10 @@
 # merchant-dashboard
 
+[![Playwright Tests](https://github.com/sujan-bhowmik/merchant-dashboard/actions/workflows/playwright.yml/badge.svg)](https://github.com/sujan-bhowmik/merchant-dashboard/actions/workflows/playwright.yml)
+
 Playwright end-to-end test setup for this project.
+
+Latest [Allure test report](https://sujan-bhowmik.github.io/merchant-dashboard/).
 
 ## Prerequisites
 
