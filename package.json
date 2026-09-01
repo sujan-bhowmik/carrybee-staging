@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "report:allure:generate": "allure generate ./allure-results -o ./allure-report --clean",
+    "report:allure:open": "allure open ./allure-report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.11.0",
     "playwright": "^1.62.1"
   }
 }
