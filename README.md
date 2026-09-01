@@ -1,10 +1,10 @@
-# merchant-dashboard
+# carrybee-staging
 
-[![Playwright Tests](https://github.com/sujan-bhowmik/merchant-dashboard/actions/workflows/playwright.yml/badge.svg)](https://github.com/sujan-bhowmik/merchant-dashboard/actions/workflows/playwright.yml)
+[![Playwright Tests](https://github.com/sujan-bhowmik/carrybee-staging/actions/workflows/playwright.yml/badge.svg)](https://github.com/sujan-bhowmik/carrybee-staging/actions/workflows/playwright.yml)
 
-Playwright end-to-end test suite for the merchant dashboard, built around the Page Object Model pattern.
+Playwright end-to-end test suite for the Carry Bee merchant dashboard (staging), built around the Page Object Model pattern.
 
-📊 Latest [Allure test report](https://sujan-bhowmik.github.io/merchant-dashboard/) (auto-published on every push to `master`).
+📊 Latest [Allure test report](https://sujan-bhowmik.github.io/carrybee-staging/) (auto-published on every push to `master`).
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Playwright end-to-end test suite for the merchant dashboard, built around the Pa
 1. **Clone/enter the project directory**
 
    ```bash
-   cd merchant-dashboard
+   cd carrybee-staging
    ```
 
 2. **Install project dependencies**
@@ -89,7 +89,7 @@ Two reports are generated on every run:
 - **Playwright HTML report** — `npx playwright show-report` (local only; not published anywhere)
 - **Allure report** — richer history/trends, generated to `allure-report/` and auto-published to GitHub Pages by CI on every push to `master`:
   - View it locally: `npm run report:allure:generate && npm run report:allure:open`
-  - View the latest published one: https://sujan-bhowmik.github.io/merchant-dashboard/
+  - View the latest published one: https://sujan-bhowmik.github.io/carrybee-staging/
 
 ## Project structure
 
@@ -191,4 +191,4 @@ Every push/PR to `master` or `main` triggers `.github/workflows/playwright.yml`,
 3. Uploads the Playwright HTML report and Allure report as downloadable build artifacts
 4. On `master`, publishes the Allure report to GitHub Pages
 
-Check the badge at the top of this README for the current status, or see the [Actions tab](https://github.com/sujan-bhowmik/merchant-dashboard/actions) for run history.
+Check the badge at the top of this README for the current status, or see the [Actions tab](https://github.com/sujan-bhowmik/carrybee-staging/actions) for run history.
