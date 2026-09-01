@@ -11,6 +11,7 @@ module.exports = defineConfig({
     ['allure-playwright', { resultsDir: 'allure-results' }],
   ],
   use: {
+    baseURL: process.env.BASE_URL,
     trace: 'on-first-retry',
   },
   projects: [
