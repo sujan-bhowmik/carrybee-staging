@@ -26,6 +26,11 @@ class LoginPage {
     this.submitButton = page.locator('form button[type="submit"]');
     this.forgotPasswordLink = page.locator('a[href="/forgot-password"]');
     this.registerLink = page.getByRole('link', { name: 'Register Now' });
+
+    // Errors surface as a toast notification (not inline text). The page also
+    // has an empty role="alert" div (Next.js's route announcer) which is a
+    // false match, so scope to the toast region specifically.
+    this.errorMessage = page.getByRole('region', { name: /Notifications/i }).getByRole('listitem');
   }
 
   async goto() {

@@ -102,8 +102,12 @@ pages/                      # Page Object Model classes — one per page/screen
   PlaywrightDevPage.js       # locators + actions for the Playwright homepage
   login.js                   # locators + actions for the login page
 
+fixtures/                   # extends Playwright's `test` with page-object fixtures
+  index.js                   # merges every fixture below and re-exports `test`/`expect`
+  playwrightDevPage.js        # fixture wiring up PlaywrightDevPage
+  login.js                    # fixture wiring up LoginPage
+
 tests/
-  fixtures.js                # extends Playwright's `test` with page-object fixtures
   example.spec.js            # sample spec using the fixtures
   data/
     params.js                 # shared test data/constants
@@ -151,11 +155,11 @@ The test itself then reads like plain English instead of a pile of selectors.
 
 ### Fixtures
 
-`tests/fixtures.js` wires each page object into Playwright's fixture system, so a spec can just ask for `loginPage` or `playwrightDevPage` as a parameter — no manual `new PageClass(page)` needed:
+The `fixtures/` folder wires each page object into Playwright's fixture system, so a spec can just ask for `loginPage` or `playwrightDevPage` as a parameter — no manual `new PageClass(page)` needed. Each page object gets its own file (e.g. `fixtures/login.js`), and `fixtures/index.js` merges them all together and re-exports `test`/`expect`:
 
 ```js
 // tests/example.spec.js
-const { test, expect } = require('./fixtures');
+const { test, expect } = require('../fixtures');
 
 test.describe('Playwright homepage', () => {
   test('has title', async ({ page, playwrightDevPage }) => {
@@ -168,15 +172,27 @@ test.describe('Playwright homepage', () => {
 To add a new page object:
 
 1. Create `pages/<name>.js` with a class exposing locators + actions.
-2. Register it in `tests/fixtures.js`:
+2. Create `fixtures/<name>.js`:
    ```js
    const { MyNewPage } = require('../pages/myNewPage');
-   // ...inside test.extend({ ... })
-   myNewPage: async ({ page }, use) => {
-     await use(new MyNewPage(page));
-   },
+
+   module.exports = {
+     myNewPage: async ({ page }, use) => {
+       await use(new MyNewPage(page));
+     },
+   };
    ```
-3. Use it in any spec: `test('...', async ({ myNewPage }) => { ... })`.
+3. Merge it into `fixtures/index.js`:
+   ```js
+   const myNewPageFixture = require('./myNewPage');
+   // ...
+   const test = base.test.extend({
+     ...playwrightDevPageFixture,
+     ...loginFixture,
+     ...myNewPageFixture,
+   });
+   ```
+4. Use it in any spec: `test('...', async ({ myNewPage }) => { ... })`.
 
 ### Grouping tests
 
