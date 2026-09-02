@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "env -u GIO_MODULE_DIR playwright test",
     "report:allure:generate": "allure generate ./allure-results -o ./allure-report --clean",
     "report:allure:open": "allure open ./allure-report"
   },

@@ -3,8 +3,8 @@ const { sleep } = require('../utils/sleep');
 
 test.describe('Merchant Add Parcel', () => {
   test('Merchant should be able toAdd a Regular Parcel successfully', async ({ page, loginPage }) => {
-    
-    
+
+
     // Navigate to the login page and log in with valid credentials
     await loginPage.goto();
 
@@ -20,11 +20,19 @@ test.describe('Merchant Add Parcel', () => {
     await expect(page).toHaveURL(/dashboard/);
 
     await sleep(5000);
-    
+
     // Click on the "Add Parcel" button
     await page.locator("//button[normalize-space()='Add Parcel']").click();
     await sleep(3000);
-    
+
+    // Select Store
+    // NOTE: the trigger's id is a React useId() value (e.g. "_r_1f_-form-item")
+    // that is regenerated on every render, so it can't be relied on. The
+    // accessible name ("Store") is stable and is what shadcn/Radix exposes
+    // via role=combobox.
+    await page.getByRole('combobox', { name: 'Store' }).click();
+    await page.getByRole('option', { name: 'Gulshan Mart Store 1', exact: true }).click();
+
     // Fill in the recipient's phone number and name
     const recipientPhone = page.locator("//input[@id='recipientPhone']");
     await recipientPhone.fill('01800-135353');
@@ -43,50 +51,48 @@ test.describe('Merchant Add Parcel', () => {
     await page.locator("//input[@id='recipientAddress']").fill('Mirpur 10 Circle, Mirpur 10, Sector 10, Dhaka, Bangladesh');
     await expect(page.locator("//input[@id='recipientAddress']")).toHaveValue('Mirpur 10 Circle, Mirpur 10, Sector 10, Dhaka, Bangladesh');
 
-    //Set Delivery Location
+    // Filling the address triggers a debounced geocoding lookup that pops up
+    // an "Address" confirmation dialog; it must be confirmed before the form
+    // underneath is interactable again. It does not auto-fill the Delivery
+    // Location fields below, so that still has to be done manually.
+    await page.getByRole('dialog', { name: 'Address' }).getByRole('button', { name: 'Confirm Address' }).click();
 
-    await page.locator('div.flex.flex-wrap.items-center.gap-1').locator('div').nth(2).click();
+    // Set Delivery Location
+    // This is a 3-step cascading combobox (City -> Zone -> Area) that opens
+    // in a dialog; each selection advances to the next step.
+    await page.getByRole('combobox', { name: 'Delivery Location *' }).click();
+    await page.getByRole('option', { name: 'Dhaka', exact: true }).click();
+    await page.getByRole('option', { name: 'Mirpur 10', exact: true }).click();
+    await page.getByRole('option', { name: 'Sector 10', exact: true }).click();
 
-    
+    // Put parcel Weight
+    await page.locator("//input[@id='itemWeight']").fill('2.5');
+
+    // Put Quantity by clicking the plus button
+    // (identified by its lucide "plus" icon rather than an unstable id)
+    await page.locator('button:has(svg.lucide-plus)').click();
+    await expect(page.locator('div.flex-1.text-center')).toHaveText('2');
+
+    // Input Parcel Description
+    await page.locator('[name="productDescription"]').fill('Electronics');
+
+    // Put COD Amount in BDT
+    await page.locator("//input[@id='cod']").fill('500');
+
+    // Put Product Value in BDT
+    await page.locator("//input[@id='productValue']").fill('1000');
 
 
+    // Press Submit Button
+    // (there are two Submit buttons in the DOM for responsive layouts;
+    // scope to the visible one)
+    await page.locator('button[type="submit"]:visible').click();
 
-    // Fill in the parcel details
-    const parcelWeight = page.locator("//input[@id='parcelWeight']");
-    await parcelWeight.fill('2.5');
-    await expect(parcelWeight).toHaveValue('2.5');
-
-    const parcelDescription = page.locator("//textarea[@id='parcelDescription']");
-    await parcelDescription.fill('Electronics');
-    await expect(parcelDescription).toHaveValue('Electronics');
-
-    // Submit the form
-    await page.locator("//button[normalize-space()='Submit']").click();
 
     // Wait for the success message to appear
-    const successMessage = page.locator("//div[contains(text(),'Parcel added successfully')]");
-    await expect(successMessage).toBeVisible(); 
-
-
-
-
-
-
-
-
-
+    const successMessage = page.locator('text=Order created successfully');
+    await expect(successMessage).toBeVisible();
 
   });
-
-
-
-
-
-
-
-
-
-
-
 
 });
